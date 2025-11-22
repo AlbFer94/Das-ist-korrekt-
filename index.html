@@ -13,6 +13,15 @@
   <div class="container text-center my-5">
   <h1 class="noto-sans-jp display-5 display-md-3 display-lg-1">Das ist korrekt !</h1>
 
+  <!-- Main Menu -->
+<div id="main-menu">
+  <p>Scegli la Modalità</p>
+  <button class="btn btn-primary" onclick="openFlashcards()">Flashcards</button>
+  <button class="btn btn-success" onclick="openQuiz()">Quiz</button>
+</div>
+<!-- Flashcards Section -->
+<div id="flashcards" style="display:none;">
+   <button class="btn btn-outline-primary mt-4" onclick="goToMenu()">⬅️ Torna al Menu </button>
   <div class="flashcard mx-auto" id="flashcard">
   <div class="front">Hund 🐕</div>
   <div class="back"></div>
@@ -34,6 +43,14 @@
 </div>
 </div>
 </div>
+<!-- Quiz Section -->
+ <div id="quiz" style="display: none;">
+  <h2>Quiz Time 🎯</h2>
+  <div id="quiz-container"></div>
+  <button class="btn btn-outline-primary mt-4" onclick="goToMenu()">⬅️ Torna al Menu </button>
+ </div>
 <script src="index.js" charset="UTF-8"></script>
 </body>
 </html>
+
+

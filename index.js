@@ -3,6 +3,131 @@ const flashcard=document.getElementById("flashcard");
 const flipBtn = document.getElementById("flip");
 const prevBtn = document.getElementById("prev");
 
+//--- Funzioni per aprire le sezioni Flashcards e Quiz---
+function goToMenu() {
+  document.getElementById("main-menu").style.display = "block";
+  document.getElementById("flashcards").style.display = "none";
+  document.getElementById("quiz").style.display = "none";
+}
+
+function openFlashcards() {
+  document.getElementById("main-menu").style.display = "none";
+  document.getElementById("flashcards").style.display = "block";
+}
+
+function openQuiz() {
+  document.getElementById("main-menu").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+}
+
+
+// --- QUIZ ENGINE CON PUNTEGGIO ---
+function startQuiz() {
+  const quizContainer = document.getElementById("quiz-container");
+  quizContainer.innerHTML = ""; // pulizia
+
+  let score = 0; // punteggio iniziale
+  let answered = 0; // numero di domande risposte
+
+  // Creiamo 5 domande casuali dalle flashcards
+  const questions = [];
+  const usedIndexes = new Set();
+
+  while (questions.length < 5 && usedIndexes.size < flashCards.length) {
+    const randomIndex = Math.floor(Math.random() * flashCards.length);
+    if (!usedIndexes.has(randomIndex)) {
+      usedIndexes.add(randomIndex);
+      const card = flashCards[randomIndex];
+
+      // Opzioni: risposta corretta + 3 traduzioni casuali
+      let options = [card.italian];
+      while (options.length < 4) {
+        const otherCard = flashCards[Math.floor(Math.random() * flashCards.length)];
+        if (!options.includes(otherCard.italian)) {
+          options.push(otherCard.italian);
+        }
+      }
+      options = options.sort(() => Math.random() - 0.5);
+
+      questions.push({
+        domanda: `Qual è la traduzione di "${card.german}"?`,
+        opzioni: options,
+        rispostaCorretta: card.italian,
+        esempio: card.esempio
+      });
+    }
+  }
+
+  // Renderizza domande
+  questions.forEach((q, idx) => {
+    const questionDiv = document.createElement("div");
+    questionDiv.classList.add("quiz-card");
+
+    const title = document.createElement("h5");
+    title.textContent = `Domanda ${idx + 1}: ${q.domanda}`;
+    questionDiv.appendChild(title);
+
+    q.opzioni.forEach(opt => {
+      const btn = document.createElement("div");
+      btn.className = "quiz-option";
+      btn.textContent = opt;
+      btn.onclick = () => {
+        if (btn.classList.contains("answered")) return; // evita doppio click
+        btn.classList.add("answered");
+
+        if (opt === q.rispostaCorretta) {
+          btn.classList.add("correct");
+          score++;
+        } else {
+          btn.classList.add("wrong");
+        }
+
+        answered++;
+        if (answered === questions.length) {
+          showScore(score, questions.length);
+        }
+      };
+      questionDiv.appendChild(btn);
+    });
+
+    quizContainer.appendChild(questionDiv);
+  });
+}
+
+// Mostra punteggio finale con bottone Riprova
+function showScore(score, total) {
+  const resultDiv = document.createElement("div");
+  resultDiv.classList.add("quiz-card");
+  resultDiv.innerHTML = `
+    <h4>🎉 Hai risposto correttamente a ${score} su ${total} domande!</h4>
+    <button class="btn btn-primary mt-3" onclick="startQuiz()">🔄 Riprova Quiz</button>
+  `;
+  document.getElementById("quiz-container").appendChild(resultDiv);
+}
+
+
+
+function openQuiz() {
+  document.getElementById("main-menu").style.display = "none";
+  document.getElementById("quiz").style.display = "block";
+  document.getElementById("flashcards").style.display = "none";
+  startQuiz();
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let flashCards=savedCards||[
   {
     german: "verblüffend",
@@ -187,5 +312,7 @@ var translation = flashCards[index].italian;
     ${translation}<br><br>
     <strong>Esempio:</strong> ${example}`;
 }
+
+
 
 
